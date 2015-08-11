@@ -29,6 +29,7 @@
  */
 
 #import "ORKBodyShaderView.h"
+#import "ORKHelpers.h"
 
 @interface ORKBodyShaderView ()
 
@@ -61,20 +62,20 @@
     
     if (!_frontShaderView) {
         
-        UIView *frontOverlayView = [[UIView alloc] initWithFrame:(CGRect){CGPointZero, CGSizeMake(200, 200)}];
-        frontOverlayView.backgroundColor = [UIColor clearColor];
+        UIImageView *frontOverlayImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"frontBodyOverlay" inBundle:ORKBundle() compatibleWithTraitCollection:nil]];
+        frontOverlayImageView.contentMode = UIViewContentModeScaleAspectFill;
         
-        _frontShaderView = [[ORKShaderView alloc] initWithSize:CGSizeMake(200, 200) overlayView:frontOverlayView delegate:self];
+        _frontShaderView = [[ORKShaderView alloc] initWithSize:CGSizeMake(346, 650) overlayView:frontOverlayImageView delegate:self];
         
         [self addSubview:_frontShaderView];
     }
     
     if (!_backShaderView) {
         
-        UIView *backOverlayView = [[UIView alloc] initWithFrame:(CGRect){CGPointZero, CGSizeMake(200, 200)}];
-        backOverlayView.backgroundColor = [UIColor clearColor];
+        UIImageView *backOverlayImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"backBodyOverlay" inBundle:ORKBundle() compatibleWithTraitCollection:nil]];
+        backOverlayImageView.contentMode = UIViewContentModeScaleAspectFill;
         
-        _backShaderView = [[ORKShaderView alloc] initWithSize:CGSizeMake(200, 200) overlayView:backOverlayView delegate:self];
+        _backShaderView = [[ORKShaderView alloc] initWithSize:CGSizeMake(346, 650) overlayView:backOverlayImageView delegate:self];
         
         [self addSubview:_backShaderView];
     }
