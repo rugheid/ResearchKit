@@ -52,12 +52,17 @@
         _bodyShaderView = [[ORKBodyShaderView alloc] initWithDelegate:self];
         _bodyShaderView.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [self.contentView addSubview:_bodyShaderView];
+        [self addSubview:_bodyShaderView];
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(_bodyShaderView);
+//        NSDictionary *views = NSDictionaryOfVariableBindings(_bodyShaderView);
         
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_bodyShaderView]|" options:0 metrics:nil views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_bodyShaderView]|" options:0 metrics:nil views:views]];
+//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_bodyShaderView]|" options:0 metrics:nil views:views]];
+//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_bodyShaderView]|" options:0 metrics:nil views:views]];
+        
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:_bodyShaderView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:_bodyShaderView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:_bodyShaderView attribute:NSLayoutAttributeHeight multiplier:1.0 constant:0.0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:_bodyShaderView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0]];
     }
     
     [super prepareView];

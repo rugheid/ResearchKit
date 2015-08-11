@@ -65,7 +65,9 @@
         UIImageView *frontOverlayImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"frontBodyOverlay" inBundle:ORKBundle() compatibleWithTraitCollection:nil]];
         frontOverlayImageView.contentMode = UIViewContentModeScaleAspectFill;
         
-        _frontShaderView = [[ORKShaderView alloc] initWithSize:CGSizeMake(346, 650) overlayView:frontOverlayImageView delegate:self];
+        frontOverlayImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        _frontShaderView = [[ORKShaderView alloc] initWithSize:CGSizeMake(264, 496) overlayView:frontOverlayImageView delegate:self];
         
         [self addSubview:_frontShaderView];
     }
@@ -75,20 +77,26 @@
         UIImageView *backOverlayImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"backBodyOverlay" inBundle:ORKBundle() compatibleWithTraitCollection:nil]];
         backOverlayImageView.contentMode = UIViewContentModeScaleAspectFill;
         
-        _backShaderView = [[ORKShaderView alloc] initWithSize:CGSizeMake(346, 650) overlayView:backOverlayImageView delegate:self];
+        backOverlayImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        _backShaderView = [[ORKShaderView alloc] initWithSize:CGSizeMake(264, 496) overlayView:backOverlayImageView delegate:self];
         
         [self addSubview:_backShaderView];
     }
     
-//    NSDictionary *views = NSDictionaryOfVariableBindings(_frontShaderView, _backShaderView);
+    NSDictionary *views = NSDictionaryOfVariableBindings(_frontShaderView, _backShaderView);
     
     _frontShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     _backShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_backShaderView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_backShaderView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0]];
+//    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_backShaderView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0]];
+//    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_backShaderView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
+//    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
+//    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0]];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_frontShaderView(==264)]-(10)-[_backShaderView(==264)]|" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_frontShaderView(==496)]|" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_backShaderView(==496)]|" options:0 metrics:nil views:views]];
 }
 
 
