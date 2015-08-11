@@ -41,7 +41,6 @@
     
     UIImage *_frontImage, *_backImage;
     int _frontShadedPixels, _frontTotalPixels, _backShadedPixels, _backTotalPixels;
-    float _shadedPercentage;
 }
 
 
@@ -97,12 +96,15 @@
 
 - (void)notifyDelegateOfResultsChange {
     
-    if ([self.delegate respondsToSelector:@selector(bodyShaderView:drawingImageChangedTo:withShadedPercentage:)]) {
+    if ([self.delegate respondsToSelector:@selector(bodyShaderView:frontImageChangedTo:backImageChangedTo:frontShadedPixels:frontTotalPixels:backShadedPixels:backTotalPixels:)]) {
         
-        UIImage *combinedImage = [self imageByCombiningImage:_frontImage withImage:_backImage];
-        float shadedPercentage = (float)(_frontShadedPixels + _backShadedPixels) / (float)(_frontTotalPixels + _backTotalPixels);
-        
-        [self.delegate bodyShaderView:self drawingImageChangedTo:combinedImage withShadedPercentage:shadedPercentage];
+        [self.delegate bodyShaderView:self
+                  frontImageChangedTo:_frontImage
+                   backImageChangedTo:_backImage
+                    frontShadedPixels:_frontShadedPixels
+                     frontTotalPixels:_frontTotalPixels
+                     backShadedPixels:_backShadedPixels
+                      backTotalPixels:_backTotalPixels];
     }
 }
 
@@ -124,27 +126,8 @@
         _backShadedPixels = numberOfShadedPixels;
         _backTotalPixels = totalNumberOfPixels;
     }
-}
-
-
-
-#pragma mark - Helper Methods
-
-- (UIImage*)imageByCombiningImage:(UIImage*)firstImage withImage:(UIImage*)secondImage {
-    UIImage *image = nil;
     
-    CGSize newImageSize = CGSizeMake(firstImage.size.width + secondImage.size.width, MAX(firstImage.size.height, secondImage.size.height));
-    if (UIGraphicsBeginImageContextWithOptions != NULL) {
-        UIGraphicsBeginImageContextWithOptions(newImageSize, NO, [[UIScreen mainScreen] scale]);
-    } else {
-        UIGraphicsBeginImageContext(newImageSize);
-    }
-    [firstImage drawAtPoint:CGPointZero];
-    [secondImage drawAtPoint:CGPointMake(firstImage.size.width, 0)];
-    image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
+    [self notifyDelegateOfResultsChange];
 }
 
 @end

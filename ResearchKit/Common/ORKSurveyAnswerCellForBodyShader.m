@@ -81,18 +81,25 @@
 
 #pragma mark - ORKBodyShaderViewDelegate
 
-- (void)bodyShaderView:(ORKBodyShaderView * __nonnull)bodyShaderView drawingImageChangedTo:(UIImage * __nullable)image withShadedPercentage:(float)shadedPercentage {
+- (void)bodyShaderView:(ORKBodyShaderView *)bodyShaderView
+   frontImageChangedTo:(UIImage *)frontImage
+    backImageChangedTo:(UIImage *)backImage
+     frontShadedPixels:(int)frontShaded
+      frontTotalPixels:(int)frontTotal
+      backShadedPixels:(int)backShaded
+       backTotalPixels:(int)backTotal {
     
     NSMutableDictionary *answer = [[NSMutableDictionary alloc] init];
     
-    [answer setObject:UIImagePNGRepresentation(image) forKey:@"image"];
-    [answer setObject:[NSNumber numberWithFloat:shadedPercentage] forKey:@"shadedPercentage"];
+    [answer setObject:UIImagePNGRepresentation(frontImage) forKey:@"frontImage"];
+    [answer setObject:[NSNumber numberWithInt:frontShaded] forKey:@"frontShaded"];
+    [answer setObject:[NSNumber numberWithInt:frontTotal] forKey:@"frontTotal"];
+    
+    [answer setObject:UIImagePNGRepresentation(backImage) forKey:@"backImage"];
+    [answer setObject:[NSNumber numberWithInt:backShaded] forKey:@"backShaded"];
+    [answer setObject:[NSNumber numberWithInt:backTotal] forKey:@"backTotal"];
     
     [self ork_setAnswer:answer];
 }
-
-//-(void)touchesBegan:(nonnull NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event {
-//    NSLog(@"touhces began in cell");
-//}
 
 @end

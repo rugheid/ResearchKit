@@ -39,7 +39,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol ORKBodyShaderViewDelegate <NSObject>
 
-- (void)bodyShaderView:(__nonnull ORKBodyShaderView*)bodyShaderView drawingImageChangedTo:(__nullable UIImage*)image withShadedPercentage:(float)shadedPercentage;
+- (void)bodyShaderView:(ORKBodyShaderView *)bodyShaderView
+   frontImageChangedTo:(UIImage*)frontImage
+    backImageChangedTo:(UIImage*)backImage
+     frontShadedPixels:(int)frontShaded
+      frontTotalPixels:(int)frontTotal
+      backShadedPixels:(int)backShaded
+       backTotalPixels:(int)backTotal;
 
 @end
 
