@@ -30,6 +30,33 @@
 
 #import "ORKShaderView.h"
 
+
+
+#pragma mark UIView Render Category
+
+@implementation UIView (Render)
+
+- (UIImage*)renderAsImage {
+    
+    CGSize size = self.frame.size;
+    
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextConcatCTM(context, CGAffineTransformMakeTranslation(-self.frame.origin.x, -self.frame.origin.y));
+    [self.layer renderInContext:context];
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
+@end
+
+
+
+#pragma mark - ORKShaderView
+
 @implementation ORKShaderView {
     
     CGSize _size;
@@ -159,7 +186,6 @@
 - (void)calculateDrawingPercentage:(CGContextRef)ctx {
     
     CGImageRef workingImage = CGBitmapContextCreateImage(ctx);
-    UIImage *image = [UIImage imageWithCGImage:workingImage];
     
     NSUInteger width = CGImageGetWidth(workingImage);
     NSUInteger height = CGImageGetHeight(workingImage);
@@ -176,8 +202,10 @@
     CGContextDrawImage(context, CGRectMake(0, 0, width, height), workingImage);
     CGImageRelease(workingImage);
     
-    UIImage *colorManImage = [UIImage imageNamed:@"ColorMan.png"];
-    CGContextDrawImage(context, CGRectMake(0, 0, width, height), colorManImage.CGImage);
+    UIImage *overlayImage = [_overlayView renderAsImage];
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), overlayImage.CGImage);
+    
+    UIImage *image = [UIImage imageWithCGImage:CGBitmapContextCreateImage(context)];
     
     CGContextRelease(context);
     
@@ -192,7 +220,6 @@
             
             _shadedPixels++;
             _totalPixels++;
-            //NSLog(@"R:%i G:%i B:%i", rawData[byteIndex], rawData[byteIndex+1], rawData[byteIndex+2]);
         }
         
         if ((rawData[byteIndex] >= 197 && rawData[byteIndex] <= 203) && (rawData[byteIndex + 1] >= 197 && rawData[byteIndex + 1] <= 203) && (rawData[byteIndex + 2] >= 197 && rawData[byteIndex + 2] <= 203)) {
@@ -202,8 +229,6 @@
         
         byteIndex += 4;
     }
-    
-    NSLog(@"%i / %i", _shadedPixels, _totalPixels);
     
     if ([self.delegate respondsToSelector:@selector(shaderView:drawingImageChangedTo:withNumberOfShadedPixels:onTotalNumberOnPixels:)]) {
         [self.delegate shaderView:self drawingImageChangedTo:image withNumberOfShadedPixels:_shadedPixels onTotalNumberOnPixels:_totalPixels];
