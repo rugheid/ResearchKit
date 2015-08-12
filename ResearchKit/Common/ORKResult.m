@@ -1268,6 +1268,95 @@
 
 @implementation ORKBodyShaderQuestionResult
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [super encodeWithCoder:aCoder];
+    ORK_ENCODE_URL(aCoder, frontImageURL);
+    ORK_ENCODE_OBJ(aCoder, frontShadedNumberOfPixels);
+    ORK_ENCODE_OBJ(aCoder, frontTotalNumberOfPixels);
+    ORK_ENCODE_URL(aCoder, backImageURL);
+    ORK_ENCODE_OBJ(aCoder, backShadedNumberOfPixels);
+    ORK_ENCODE_OBJ(aCoder, backTotalNumberOfPixels);
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        ORK_DECODE_URL(aDecoder, frontImageURL);
+        ORK_DECODE_OBJ_CLASS(aDecoder, frontShadedNumberOfPixels, NSNumber);
+        ORK_DECODE_OBJ_CLASS(aDecoder, frontTotalNumberOfPixels, NSNumber);
+        ORK_DECODE_URL(aDecoder, backImageURL);
+        ORK_DECODE_OBJ_CLASS(aDecoder, backShadedNumberOfPixels, NSNumber);
+        ORK_DECODE_OBJ_CLASS(aDecoder, backTotalNumberOfPixels, NSNumber);
+    }
+    return self;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (BOOL)isEqual:(id)object {
+    if (![super isEqual:object]) {
+        return NO;
+    }
+    
+    __typeof(self) castObject = object;
+    if (!ORKEqualObjects(_frontImageURL, castObject.frontImageURL)) {
+        return NO;
+    }
+    if (!ORKEqualObjects(_frontShadedNumberOfPixels, castObject.frontShadedNumberOfPixels)) {
+        return NO;
+    }
+    if (!ORKEqualObjects(_frontTotalNumberOfPixels, castObject.frontTotalNumberOfPixels)) {
+        return NO;
+    }
+    if (!ORKEqualObjects(_backImageURL, castObject.backImageURL)) {
+        return NO;
+    }
+    if (!ORKEqualObjects(_backShadedNumberOfPixels, castObject.backShadedNumberOfPixels)) {
+        return NO;
+    }
+    if (!ORKEqualObjects(_backTotalNumberOfPixels, castObject.backTotalNumberOfPixels)) {
+        return NO;
+    }
+    return YES;
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    ORKBodyShaderQuestionResult *result = [super copyWithZone:zone];
+    result->_frontImageURL = [self.frontImageURL copyWithZone:zone];
+    result->_frontShadedNumberOfPixels = [self.frontShadedNumberOfPixels copyWithZone:zone];
+    result->_frontTotalNumberOfPixels = [self.frontTotalNumberOfPixels copyWithZone:zone];
+    result->_backImageURL = [self.backImageURL copyWithZone:zone];
+    result->_backShadedNumberOfPixels = [self.backShadedNumberOfPixels copyWithZone:zone];
+    result->_backTotalNumberOfPixels = [self.backTotalNumberOfPixels copyWithZone:zone];
+    return result;
+}
+
++ (Class)answerClass {
+    return [NSDictionary class];
+}
+
+- (void)setAnswer:(id)answer {
+    NSDictionary *validatedAnswer = [self validateAnswer:answer];
+    self.frontImageURL = [validatedAnswer objectForKey:@"frontImageURL"];
+    self.frontShadedNumberOfPixels = [validatedAnswer objectForKey:@"frontShaded"];
+    self.frontTotalNumberOfPixels = [validatedAnswer objectForKey:@"frontTotal"];
+    self.backImageURL = [validatedAnswer objectForKey:@"backImageURL"];
+    self.backShadedNumberOfPixels = [validatedAnswer objectForKey:@"backShaded"];
+    self.backTotalNumberOfPixels = [validatedAnswer objectForKey:@"backTotal"];
+}
+
+- (id)answer {
+    return @{@"frontImageURL": self.frontImageURL,
+             @"frontShaded": self.frontShadedNumberOfPixels,
+             @"frontTotal": self.frontTotalNumberOfPixels,
+             @"backImageURL": self.backImageURL,
+             @"backShaded": self.backShadedNumberOfPixels,
+             @"backTotal": self.backTotalNumberOfPixels};
+}
+
 @end
 
 

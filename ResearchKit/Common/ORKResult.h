@@ -785,6 +785,18 @@ ORK_CLASS_AVAILABLE
 ORK_CLASS_AVAILABLE
 @interface ORKBodyShaderQuestionResult : ORKQuestionResult
 
+@property (nonatomic, copy, nullable) NSURL *frontImageURL;
+
+@property (nonatomic, copy, nullable) NSNumber *frontShadedNumberOfPixels;
+
+@property (nonatomic, copy, nullable) NSNumber *frontTotalNumberOfPixels;
+
+@property (nonatomic, copy, nullable) NSURL *backImageURL;
+
+@property (nonatomic, copy, nullable) NSNumber *backShadedNumberOfPixels;
+
+@property (nonatomic, copy, nullable) NSNumber *backTotalNumberOfPixels;
+
 @end
 
 

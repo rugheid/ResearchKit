@@ -645,7 +645,7 @@ enum TaskListRow: Int, CustomStringConvertible {
     }
     
     private var exampleSuccessSound: UInt32 {
-        var successSoundPath: CFURLRef! = NSURL(fileURLWithPath: "///System/Library/Audio/UISounds/Modern/sms_alert_complete.caf") as CFURLRef!
+        let successSoundPath: CFURLRef! = NSURL(fileURLWithPath: "///System/Library/Audio/UISounds/Modern/sms_alert_complete.caf") as CFURLRef!
         var soundID: SystemSoundID = 0
         AudioServicesCreateSystemSoundID(successSoundPath, &soundID)
         return soundID

@@ -30,6 +30,8 @@
 
 
 #import "ORKSurveyAnswerCellForBodyShader.h"
+#import "ORKQuestionStepViewController.h"
+#import "ORKStepViewController_Internal.h"
 
 
 @interface ORKSurveyAnswerCellForBodyShader () {
@@ -54,11 +56,6 @@
         
         [self addSubview:_bodyShaderView];
         
-//        NSDictionary *views = NSDictionaryOfVariableBindings(_bodyShaderView);
-        
-//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_bodyShaderView]|" options:0 metrics:nil views:views]];
-//        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_bodyShaderView]|" options:0 metrics:nil views:views]];
-        
         [self addConstraint:[NSLayoutConstraint constraintWithItem:_bodyShaderView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
         [self addConstraint:[NSLayoutConstraint constraintWithItem:_bodyShaderView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:_bodyShaderView attribute:NSLayoutAttributeHeight multiplier:1.0 constant:0.0]];
@@ -82,6 +79,18 @@
     [self.delegate answerCell:self answerDidChangeTo:answer dueUserAction:YES];
 }
 
+- (NSURL*)outputDirectory {
+    return [[(ORKQuestionStepViewController*)self.delegate outputDirectory] URLByAppendingPathComponent:self.step.identifier];
+}
+
+- (NSURL*)frontImageURL {
+    return [[self outputDirectory] URLByAppendingPathComponent:@"frontImage.png"];
+}
+
+- (NSURL*)backImageURL {
+    return [[self outputDirectory] URLByAppendingPathComponent:@"backImage.png"];
+}
+
 
 
 #pragma mark - ORKBodyShaderViewDelegate
@@ -96,13 +105,23 @@
     
     NSMutableDictionary *answer = [[NSMutableDictionary alloc] init];
     
-    [answer setObject:UIImagePNGRepresentation(frontImage) forKey:@"frontImage"];
-    [answer setObject:[NSNumber numberWithInt:frontShaded] forKey:@"frontShaded"];
-    [answer setObject:[NSNumber numberWithInt:frontTotal] forKey:@"frontTotal"];
+    if (frontImage) {
+        
+        [UIImagePNGRepresentation(frontImage) writeToURL:[self frontImageURL] atomically:YES];
+        
+        [answer setObject:[self frontImageURL] forKey:@"frontImageURL"];
+        [answer setObject:[NSNumber numberWithInt:frontShaded] forKey:@"frontShaded"];
+        [answer setObject:[NSNumber numberWithInt:frontTotal] forKey:@"frontTotal"];
+    }
     
-    [answer setObject:UIImagePNGRepresentation(backImage) forKey:@"backImage"];
-    [answer setObject:[NSNumber numberWithInt:backShaded] forKey:@"backShaded"];
-    [answer setObject:[NSNumber numberWithInt:backTotal] forKey:@"backTotal"];
+    if (backImage) {
+        
+        [UIImagePNGRepresentation(backImage) writeToURL:[self backImageURL] atomically:YES];
+        
+        [answer setObject:[self backImageURL] forKey:@"backImageURL"];
+        [answer setObject:[NSNumber numberWithInt:backShaded] forKey:@"backShaded"];
+        [answer setObject:[NSNumber numberWithInt:backTotal] forKey:@"backTotal"];
+    }
     
     [self ork_setAnswer:answer];
 }
