@@ -66,7 +66,6 @@
     CGContextRef _cacheContext, _savedCurrentContext;
     UIColor *_drawingColor;
     CGFloat _drawingLineWidth;
-    BOOL _drawingEnabled;
     
     int _shadedPixels, _totalPixels;
 }
@@ -116,6 +115,17 @@
 
 - (CGSize)intrinsicContentSize {
     return _size;
+}
+
+
+
+#pragma mark - Controls
+
+- (void)setDraw:(BOOL)drawOrErase {
+    
+    _drawingColor = drawOrErase ?
+        [UIColor colorWithRed:55.0f/255.0f green:130.0f/255.0f blue:232.0f/255.0f alpha:1]:
+        [UIColor colorWithRed:200.0f/255.0f green:200.0f/255.0f blue:200.0f/255.0f alpha:1];
 }
 
 

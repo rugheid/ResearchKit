@@ -44,4 +44,8 @@
 
 @property (nonatomic, weak, nullable) id<ORKShaderViewDelegate> delegate;
 
+@property (nonatomic, assign) BOOL drawingEnabled;
+
+- (void)setDraw:(BOOL)drawOrErase;
+
 @end

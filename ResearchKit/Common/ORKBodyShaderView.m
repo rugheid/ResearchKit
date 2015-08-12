@@ -157,12 +157,18 @@
 
 - (void)drawButtonTapped:(id)sender {
     
-    NSLog(@"draw tapped");
+    [self setDraw:YES];
 }
 
 - (void)eraseButtonTapped:(id)sender {
     
-    NSLog(@"erase tapped");
+    [self setDraw:NO];
+}
+
+- (void)setDraw:(BOOL)drawOrErase {
+    
+    [_frontShaderView setDraw:drawOrErase];
+    [_backShaderView setDraw:drawOrErase];
 }
 
 
