@@ -118,6 +118,9 @@ func resultTableViewProviderForResult(result: ORKResult?) -> protocol<UITableVie
 
         case is ORKToneAudiometryResult:
             providerType = ToneAudiometryResultTableViewProvider.self
+        
+        case is ORKBodyShaderQuestionResult:
+            providerType = BodyShaderResultTableViewProvider.self
 
         /*
             Refer to the comment near the switch statement for why the
@@ -554,6 +557,74 @@ class ToneAudiometryResultTableViewProvider: ResultTableViewProvider {
 
             return ResultRow(text: text, detail: detail)
         }
+    }
+}
+
+/// Table view provider specific to an `ORKBodyShaderQuestionResult` instance.
+class BodyShaderResultTableViewProvider: ResultTableViewProvider {
+    // MARK: ResultTableViewProvider
+    
+    override func resultRowsForSection(section: Int) -> [ResultRow] {
+        let questionResult = result as! ORKBodyShaderQuestionResult
+        
+        var rows = super.resultRowsForSection(section) + [
+            // The URL of the image file containing the front facing body shape.
+            ResultRow(text: "frontImageURL", detail: questionResult.frontImageURL),
+            
+            // The number of shaded pixels in the front facing body shape.
+            ResultRow(text: "frontShaded", detail: questionResult.frontShadedNumberOfPixels),
+            
+            // The total number of pixels in the front facing body shape.
+            ResultRow(text: "frontTotal", detail: questionResult.frontTotalNumberOfPixels),
+            
+            // The URL of the image file containing the back facing body shape.
+            ResultRow(text: "backImageURL", detail: questionResult.backImageURL),
+            
+            // The number of shaded pixels in the back facing body shape.
+            ResultRow(text: "backShaded", detail: questionResult.backShadedNumberOfPixels),
+            
+            // The total number of pixels in the back facing body shape.
+            ResultRow(text: "backTotal", detail: questionResult.backTotalNumberOfPixels)
+        ]
+        
+        if let frontImageURL = questionResult.frontImageURL {
+            if let data = NSData(contentsOfURL: frontImageURL), let image = UIImage(data: data) {
+                rows += [
+                    // The image of the front facing body shape.
+                    .Image(image)
+                ]
+            }
+        }
+        
+        if let backImageURL = questionResult.backImageURL {
+            if let data = NSData(contentsOfURL: backImageURL), let image = UIImage(data: data) {
+                rows += [
+                    // The image of the front facing body shape.
+                    .Image(image)
+                ]
+            }
+        }
+        
+        return rows
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        let resultRows = resultRowsForSection(indexPath.section)
+        
+        if !resultRows.isEmpty {
+            switch resultRows[indexPath.row] {
+            case .Image(.Some(let image)):
+                // Keep the aspect ratio the same.
+                let imageAspectRatio = image.size.width / image.size.height
+                
+                return tableView.frame.size.width / imageAspectRatio
+                
+            default:
+                break
+            }
+        }
+        
+        return UITableViewAutomaticDimension
     }
 }
 

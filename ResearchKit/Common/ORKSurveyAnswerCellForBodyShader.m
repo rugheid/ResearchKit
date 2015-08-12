@@ -91,6 +91,12 @@
     return [[self outputDirectory] URLByAppendingPathComponent:@"backImage.png"];
 }
 
+- (void)createOutputDirectoryIfNecessary {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:[self outputDirectory].path]) {
+        [[NSFileManager defaultManager] createDirectoryAtURL:[self outputDirectory] withIntermediateDirectories:NO attributes:nil error:nil];
+    }
+}
+
 
 
 #pragma mark - ORKBodyShaderViewDelegate
@@ -104,6 +110,8 @@
        backTotalPixels:(int)backTotal {
     
     NSMutableDictionary *answer = [[NSMutableDictionary alloc] init];
+    
+    [self createOutputDirectoryIfNecessary];
     
     if (frontImage) {
         
