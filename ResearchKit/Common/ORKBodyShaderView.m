@@ -103,14 +103,33 @@
         [self addSubview:_drawButton];
     }
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(_frontShaderView, _backShaderView, _drawButton);
+    if (!_eraseButton) {
+        
+        _eraseButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        
+        _eraseButton.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        UIImage *drawImage = [UIImage imageNamed:@"eraseButton" inBundle:ORKBundle() compatibleWithTraitCollection:nil];
+        [_eraseButton setImage:ORKImageByTintingImage(drawImage, self.tintColor, 1.0) forState:UIControlStateNormal];
+        
+        _eraseButton.layer.cornerRadius = 57.0/2.0;
+        _eraseButton.layer.borderColor = self.tintColor.CGColor;
+        _eraseButton.layer.borderWidth = 1.0;
+        
+        [_eraseButton addTarget:self action:@selector(eraseButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [self addSubview:_eraseButton];
+    }
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(_frontShaderView, _backShaderView, _drawButton, _eraseButton);
     
     _frontShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     _backShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_frontShaderView(==264)]-(10)-[_backShaderView(==264)]|" options:0 metrics:nil views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_drawButton(==57)]" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_drawButton(==57)]-[_eraseButton(==57)]" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_frontShaderView(==496)]-(16)-[_drawButton(==57)]|" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_frontShaderView]-(16)-[_eraseButton(==57)]" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_backShaderView(==496)]" options:0 metrics:nil views:views]];
 }
 
@@ -143,6 +162,7 @@
 
 - (void)eraseButtonTapped:(id)sender {
     
+    NSLog(@"erase tapped");
 }
 
 
