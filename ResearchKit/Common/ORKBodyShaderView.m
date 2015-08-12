@@ -89,11 +89,6 @@
     _frontShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     _backShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     
-//    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_backShaderView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0]];
-//    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_backShaderView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
-//    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
-//    [self addConstraint:[NSLayoutConstraint constraintWithItem:_frontShaderView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0]];
-    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_frontShaderView(==264)]-(10)-[_backShaderView(==264)]|" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_frontShaderView(==496)]|" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_backShaderView(==496)]|" options:0 metrics:nil views:views]];

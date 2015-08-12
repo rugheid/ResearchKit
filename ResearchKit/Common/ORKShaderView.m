@@ -161,8 +161,6 @@
     CGImageRef workingImage = CGBitmapContextCreateImage(ctx);
     UIImage *image = [UIImage imageWithCGImage:workingImage];
     
-//    [self.questionnaireController updateImage:[UIImage imageWithCGImage:workingImage]];
-    
     NSUInteger width = CGImageGetWidth(workingImage);
     NSUInteger height = CGImageGetHeight(workingImage);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
