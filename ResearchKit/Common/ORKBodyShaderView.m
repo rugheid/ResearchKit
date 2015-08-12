@@ -97,6 +97,7 @@
         _drawButton.layer.cornerRadius = 57.0/2.0;
         _drawButton.layer.borderColor = self.tintColor.CGColor;
         _drawButton.layer.borderWidth = 1.0;
+        _drawButton.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.2, 1.2);
         
         [_drawButton addTarget:self action:@selector(drawButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         
@@ -127,9 +128,9 @@
     _backShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_frontShaderView(==264)]-(10)-[_backShaderView(==264)]|" options:0 metrics:nil views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_drawButton(==57)]-[_eraseButton(==57)]" options:0 metrics:nil views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_frontShaderView(==496)]-(16)-[_drawButton(==57)]|" options:0 metrics:nil views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_frontShaderView]-(16)-[_eraseButton(==57)]" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_drawButton(==57)]-(16)-[_eraseButton(==57)]" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_frontShaderView(==496)]-(24)-[_drawButton(==57)]|" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_frontShaderView]-(24)-[_eraseButton(==57)]" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_backShaderView(==496)]" options:0 metrics:nil views:views]];
 }
 
@@ -158,11 +159,21 @@
 - (void)drawButtonTapped:(id)sender {
     
     [self setDraw:YES];
+    
+    [UIView animateWithDuration:0.1 animations:^{
+        _drawButton.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.2, 1.2);
+        _eraseButton.transform = CGAffineTransformIdentity;
+    }];
 }
 
 - (void)eraseButtonTapped:(id)sender {
     
     [self setDraw:NO];
+    
+    [UIView animateWithDuration:0.1 animations:^{
+        _drawButton.transform = CGAffineTransformIdentity;
+        _eraseButton.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.2, 1.2);
+    }];
 }
 
 - (void)setDraw:(BOOL)drawOrErase {
