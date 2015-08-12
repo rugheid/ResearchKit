@@ -45,6 +45,7 @@
 @property (nonatomic, weak, nullable) id<ORKShaderViewDelegate> delegate;
 
 @property (nonatomic, assign) BOOL drawingEnabled;
+@property (nonatomic, assign) CGFloat lineWidth;
 
 - (void)setDraw:(BOOL)drawOrErase;
 

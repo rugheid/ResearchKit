@@ -65,7 +65,6 @@
     void *_cacheBitmap;
     CGContextRef _cacheContext, _savedCurrentContext;
     UIColor *_drawingColor;
-    CGFloat _drawingLineWidth;
     
     int _shadedPixels, _totalPixels;
 }
@@ -85,7 +84,7 @@
         self.delegate = delegate;
         
         _drawingEnabled = YES;
-        _drawingLineWidth = 10.0;
+        _lineWidth = 20.0;
         _drawingColor = [UIColor colorWithRed:55.0f/255.0f green:130.0f/255.0f blue:232.0f/255.0f alpha:1];
         
         if (![self initContext]) {
@@ -181,7 +180,7 @@
     CGContextSetLineCap(_cacheContext, kCGLineCapRound);
     
     // Line Width
-    CGContextSetLineWidth(_cacheContext, _drawingLineWidth);
+    CGContextSetLineWidth(_cacheContext, _lineWidth);
     
     CGPoint lastPoint = [touch previousLocationInView:self];
     CGPoint newPoint = [touch locationInView:self];

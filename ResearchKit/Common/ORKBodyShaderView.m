@@ -129,6 +129,11 @@
         
         _lineWidthSlider.translatesAutoresizingMaskIntoConstraints = NO;
         
+        _lineWidthSlider.minimumValue = 15.0;
+        _lineWidthSlider.maximumValue = 100.0;
+        
+        [_lineWidthSlider addTarget:self action:@selector(lineWidthChanged:) forControlEvents:UIControlEventValueChanged];
+        
         [self addSubview:_lineWidthSlider];
     }
     
@@ -191,6 +196,13 @@
     
     [_frontShaderView setDraw:drawOrErase];
     [_backShaderView setDraw:drawOrErase];
+}
+
+- (void)lineWidthChanged:(id)sender {
+    
+    CGFloat lineWidth = _lineWidthSlider.value;
+    [_frontShaderView setLineWidth:lineWidth];
+    [_backShaderView setLineWidth:lineWidth];
 }
 
 
