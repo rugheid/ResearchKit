@@ -35,6 +35,7 @@
 
 @property (nonatomic, strong) ORKShaderView *frontShaderView, *backShaderView;
 @property (nonatomic, strong) UIButton *drawButton, *eraseButton;
+@property (nonatomic, strong) UISlider *lineWidthSlider;
 
 @end
 
@@ -122,16 +123,26 @@
         [self addSubview:_eraseButton];
     }
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(_frontShaderView, _backShaderView, _drawButton, _eraseButton);
+    if (!_lineWidthSlider) {
+        
+        _lineWidthSlider = [[UISlider alloc] init];
+        
+        _lineWidthSlider.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [self addSubview:_lineWidthSlider];
+    }
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(_frontShaderView, _backShaderView, _drawButton, _eraseButton, _lineWidthSlider);
     
     _frontShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     _backShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_frontShaderView(==264)]-(10)-[_backShaderView(==264)]|" options:0 metrics:nil views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_drawButton(==57)]-(16)-[_eraseButton(==57)]" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(24)-[_drawButton(==57)]-(24)-[_eraseButton(==57)]-(24)-[_lineWidthSlider]-(24)-|" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_frontShaderView(==496)]-(24)-[_drawButton(==57)]|" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_frontShaderView]-(24)-[_eraseButton(==57)]" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_backShaderView(==496)]" options:0 metrics:nil views:views]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:_lineWidthSlider attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_eraseButton attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
 }
 
 
