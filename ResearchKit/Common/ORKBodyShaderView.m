@@ -45,6 +45,7 @@
 }
 
 
+
 #pragma mark - Init
 
 - (nonnull instancetype)initWithDelegate:(nonnull id<ORKBodyShaderViewDelegate>)delegate {
@@ -58,7 +59,7 @@
     return self;
 }
 
-- (void) setupLayout {
+- (void)setupLayout {
     
     if (!_frontShaderView) {
         
@@ -84,14 +85,33 @@
         [self addSubview:_backShaderView];
     }
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(_frontShaderView, _backShaderView);
+    if (!_drawButton) {
+        
+        _drawButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        
+        _drawButton.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        UIImage *drawImage = [UIImage imageNamed:@"drawButton" inBundle:ORKBundle() compatibleWithTraitCollection:nil];
+        [_drawButton setImage:ORKImageByTintingImage(drawImage, self.tintColor, 1.0) forState:UIControlStateNormal];
+        
+        _drawButton.layer.cornerRadius = 57.0/2.0;
+        _drawButton.layer.borderColor = self.tintColor.CGColor;
+        _drawButton.layer.borderWidth = 1.0;
+        
+        [_drawButton addTarget:self action:@selector(drawButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [self addSubview:_drawButton];
+    }
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(_frontShaderView, _backShaderView, _drawButton);
     
     _frontShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     _backShaderView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_frontShaderView(==264)]-(10)-[_backShaderView(==264)]|" options:0 metrics:nil views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_frontShaderView(==496)]|" options:0 metrics:nil views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_backShaderView(==496)]|" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_drawButton(==57)]" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_frontShaderView(==496)]-(16)-[_drawButton(==57)]|" options:0 metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_backShaderView(==496)]" options:0 metrics:nil views:views]];
 }
 
 
@@ -110,6 +130,19 @@
                      backShadedPixels:_backShadedPixels
                       backTotalPixels:_backTotalPixels];
     }
+}
+
+
+
+#pragma mark - ORKShaderView Controls
+
+- (void)drawButtonTapped:(id)sender {
+    
+    NSLog(@"draw tapped");
+}
+
+- (void)eraseButtonTapped:(id)sender {
+    
 }
 
 

@@ -154,6 +154,8 @@ void ORKAdjustHeightForLabel(UILabel *label);
 // build a image with color
 UIImage *ORKImageWithColor(UIColor *color);
 
+UIImage *ORKImageByTintingImage(UIImage *image, UIColor *tintColor, CGFloat scale);
+
 void ORKEnableAutoLayoutForViews(NSArray *views);
 
 NSDateComponentsFormatter *ORKTimeIntervalLabelFormatter();

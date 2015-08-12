@@ -32,8 +32,6 @@
 #import <UIKit/UIKit.h>
 
 
-UIImage *ORKImageByTintingImage(UIImage *image, UIColor *tintColor, CGFloat scale);
-
 @interface ORKTintedImageView : UIImageView
 
 @property (nonatomic, assign) BOOL shouldApplyTint;

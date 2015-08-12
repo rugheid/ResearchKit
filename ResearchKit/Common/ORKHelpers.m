@@ -195,6 +195,32 @@ UIImage *ORKImageWithColor(UIColor *color) {
     return image;
 }
 
+#define ORKTintedImageLog(...)
+
+UIImage *ORKImageByTintingImage(UIImage *image, UIColor *tintColor, CGFloat scale) {
+    if (!image || !tintColor || !(scale > 0)) {
+        return nil;
+    }
+    
+    ORKTintedImageLog(@"%@ %@ %f", image, tintColor, scale);
+    
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, scale);
+    CGContextRef context     = UIGraphicsGetCurrentContext();
+    CGContextSetBlendMode(context, kCGBlendModeNormal);
+    CGContextSetAlpha(context, 1);
+    
+    CGRect r = (CGRect){{0,0},image.size};
+    CGContextBeginTransparencyLayerWithRect(context, r, NULL);
+    [tintColor setFill];
+    [image drawInRect:r];
+    UIRectFillUsingBlendMode(r, kCGBlendModeSourceIn);
+    CGContextEndTransparencyLayer(context);
+    
+    UIImage *outputImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return outputImage;
+}
+
 void ORKEnableAutoLayoutForViews(NSArray *views) {
     [views enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [(UIView *)obj setTranslatesAutoresizingMaskIntoConstraints:NO];
