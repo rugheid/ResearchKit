@@ -44,6 +44,8 @@
 
 @property (nonatomic, weak, nullable) id<ORKShaderViewDelegate> delegate;
 
+@property (nonatomic, strong, nullable) UIGestureRecognizer *drawGestureRecognizer;
+
 @property (nonatomic, assign) BOOL drawingEnabled;
 @property (nonatomic, assign) CGFloat lineWidth;
 

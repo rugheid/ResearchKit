@@ -30,6 +30,8 @@
 
 #import "ORKShaderView.h"
 
+#import <UIKit/UIGestureRecognizerSubclass.h>
+
 
 
 #pragma mark UIView Render Category
@@ -55,7 +57,81 @@
 
 
 
+#pragma mark - Gesture Recognizer
+
+@protocol ORKDrawGestureRecognizerDelegate <NSObject>
+
+- (void)gestureTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)gestureTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)gestureTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
+
+@end
+
+
+@interface ORKDrawGestureRecognizer : UIGestureRecognizer
+
+@property (nonatomic, weak) id<ORKDrawGestureRecognizerDelegate> eventDelegate;
+
+@end
+
+
+@implementation ORKDrawGestureRecognizer
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (touches.count > 1 || self.numberOfTouches > 1) {
+        for (UITouch *touch in touches) {
+            [self ignoreTouch:touch forEvent:event];
+        }
+    } else {
+        self.state = UIGestureRecognizerStateBegan;
+        [self.eventDelegate gestureTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event];
+    }
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self.eventDelegate gestureTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    self.state = UIGestureRecognizerStateEnded;
+    [self.eventDelegate gestureTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    self.state = UIGestureRecognizerStateFailed;
+}
+
+- (BOOL)shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    // Prioritize over scrollView's pan gesture recognizer and swipe gesture recognizer
+    if ([otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]
+        || [otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
+        return YES;
+    }
+    return NO;
+}
+
+@end
+
+
+
 #pragma mark - ORKShaderView
+
+static const CGFloat kPointMinDistance = 5;
+static const CGFloat kPointMinDistanceSquared = kPointMinDistance * kPointMinDistance;
+
+
+@interface ORKShaderView () <ORKDrawGestureRecognizerDelegate> {
+    CGPoint currentPoint;
+    CGPoint previousPoint1;
+    CGPoint previousPoint2;
+}
+
+@property (nonatomic, strong) UIBezierPath *currentPath;
+@property (nonatomic, strong) NSMutableArray *pathArray;
+@property (nonatomic, strong) NSArray *backgroundLines;
+
+@end
+
 
 @implementation ORKShaderView {
     
@@ -77,6 +153,12 @@
     
     self = [super initWithFrame:(CGRect){CGPointZero, size}];
     if (self) {
+        
+        if (!_drawGestureRecognizer) {
+            _drawGestureRecognizer = [ORKDrawGestureRecognizer new];
+            ((ORKDrawGestureRecognizer *)_drawGestureRecognizer).eventDelegate = self;
+            [self addGestureRecognizer:_drawGestureRecognizer];
+        }
         
         _size = size;
         _overlayView = overlayView;
@@ -174,7 +256,7 @@
     CGImageRelease(cacheImage);
 }
 
-- (void) drawToCache:(UITouch*)touch {
+- (void) drawToCacheFromPoint:(CGPoint)lastPoint toPoint:(CGPoint)newPoint {
     
     CGContextSetStrokeColorWithColor(_cacheContext, [_drawingColor CGColor]);
     CGContextSetLineCap(_cacheContext, kCGLineCapRound);
@@ -182,15 +264,30 @@
     // Line Width
     CGContextSetLineWidth(_cacheContext, _lineWidth);
     
-    CGPoint lastPoint = [touch previousLocationInView:self];
-    CGPoint newPoint = [touch locationInView:self];
-    
     CGContextMoveToPoint(_cacheContext, lastPoint.x, lastPoint.y);
     CGContextAddLineToPoint(_cacheContext, newPoint.x, newPoint.y);
     CGContextStrokePath(_cacheContext);
     
     [self setNeedsDisplay];
 }
+
+//- (void) drawToCache:(UITouch*)touch {
+//    
+//    CGContextSetStrokeColorWithColor(_cacheContext, [_drawingColor CGColor]);
+//    CGContextSetLineCap(_cacheContext, kCGLineCapRound);
+//    
+//    // Line Width
+//    CGContextSetLineWidth(_cacheContext, _lineWidth);
+//    
+//    CGPoint lastPoint = [touch previousLocationInView:self];
+//    CGPoint newPoint = [touch locationInView:self];
+//    
+//    CGContextMoveToPoint(_cacheContext, lastPoint.x, lastPoint.y);
+//    CGContextAddLineToPoint(_cacheContext, newPoint.x, newPoint.y);
+//    CGContextStrokePath(_cacheContext);
+//    
+//    [self setNeedsDisplay];
+//}
 
 - (void)calculateDrawingPercentage:(CGContextRef)ctx {
     
@@ -247,18 +344,36 @@
 }
 
 
+- (UIBezierPath *)pathWithRoundedStyle {
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    path.lineCapStyle = kCGLineCapRound;
+    path.lineWidth = self.lineWidth;
+    path.lineJoinStyle = kCGLineJoinRound;
+    
+    return path;
+}
 
-#pragma mark - Touches
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+
+#pragma mark - Draw Gesture Recognizer
+
+- (void)gestureTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
     if (_drawingEnabled) {
-        UITouch *touch = [touches anyObject];
-        [self drawToCache:touch];
+        UITouch *touch = touches.anyObject;
+        [self drawToCacheFromPoint:[touch locationInView:self] toPoint:[touch locationInView:self]];
     }
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)gestureTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    if (_drawingEnabled) {
+        UITouch *touch = [touches anyObject];
+        [self drawToCacheFromPoint:[touch previousLocationInView:self] toPoint:[touch locationInView:self]];
+    }
+}
+
+- (void)gestureTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
     [self calculateDrawingPercentage:_savedCurrentContext];
 }
