@@ -143,6 +143,8 @@ static const CGFloat kPointMinDistanceSquared = kPointMinDistance * kPointMinDis
     UIColor *_drawingColor;
     
     int _shadedPixels, _totalPixels;
+    
+    BOOL _firstDrawExported;
 }
 
 
@@ -168,6 +170,8 @@ static const CGFloat kPointMinDistanceSquared = kPointMinDistance * kPointMinDis
         _drawingEnabled = YES;
         _lineWidth = 20.0;
         _drawingColor = [UIColor colorWithRed:55.0f/255.0f green:130.0f/255.0f blue:232.0f/255.0f alpha:1];
+        
+        _firstDrawExported = NO;
         
         if (![self initContext]) {
             //TODO: Handle error here
@@ -254,6 +258,11 @@ static const CGFloat kPointMinDistanceSquared = kPointMinDistance * kPointMinDis
     CGImageRef cacheImage = CGBitmapContextCreateImage(_cacheContext);
     CGContextDrawImage(_savedCurrentContext, self.bounds, cacheImage);
     CGImageRelease(cacheImage);
+    
+    if (!_firstDrawExported) {
+        [self calculateDrawingPercentage:_savedCurrentContext];
+        _firstDrawExported = YES;
+    }
 }
 
 - (void) drawToCacheFromPoint:(CGPoint)lastPoint toPoint:(CGPoint)newPoint {
