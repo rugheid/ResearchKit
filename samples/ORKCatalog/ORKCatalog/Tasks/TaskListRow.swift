@@ -121,6 +121,7 @@ enum TaskListRow: Int, CustomStringConvertible {
                     .TimeOfDayQuestion,
                     .ValuePickerChoiceQuestion,
                     .ImageCapture,
+                    .BodyShader,
                 ]),
             TaskListRowSection(title: "Consent", rows:
                 [
