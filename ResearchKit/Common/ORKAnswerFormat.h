@@ -99,6 +99,7 @@ typedef NS_ENUM(NSInteger, ORKNumberFormattingStyle) {
 
 @class ORKScaleAnswerFormat;
 @class ORKContinuousScaleAnswerFormat;
+@class ORKTextScaleAnswerFormat;
 @class ORKValuePickerAnswerFormat;
 @class ORKImageChoiceAnswerFormat;
 @class ORKTextChoiceAnswerFormat;
@@ -165,6 +166,10 @@ ORK_CLASS_AVAILABLE
                                                                        vertical:(BOOL)vertical
                                                         maximumValueDescription:(nullable NSString *)maximumValueDescription
                                                         minimumValueDescription:(nullable NSString *)minimumValueDescription;
+
++ (ORKTextScaleAnswerFormat *)textScaleAnswerFormatWithTextChoices:(NSArray <ORKTextChoice *> *)textChoices
+                                                      defaultIndex:(NSInteger)defaultIndex
+                                                          vertical:(BOOL)vertical;
 
 + (ORKBooleanAnswerFormat *)booleanAnswerFormat;
 
@@ -333,6 +338,18 @@ ORK_CLASS_AVAILABLE
  */
 @property (readonly, nullable) NSString *minimumValueDescription;
 
+/**
+ An image for the upper bound of the slider. The recommended image size is 30 x 30 points.
+ The maximum range label will not be visible.
+ */
+@property (strong, nullable) UIImage *maximumImage;
+
+/**
+ An image for the lower bound of the slider. The recommended image size is 30 x 30 points.
+ The minimum range label will not be visible.
+ */
+@property (strong, nullable) UIImage *minimumImage;
+
 @end
 
 
@@ -450,6 +467,78 @@ ORK_CLASS_AVAILABLE
  A localized label to describe the minimum value of the scale. (read-only)
  */
 @property (readonly, nullable) NSString *minimumValueDescription;
+
+/**
+ An image for the upper bound of the slider. The recommended image size is 30 x 30 points.
+ The maximum range label will not be visible.
+ */
+@property (strong, nullable) UIImage *maximumImage;
+
+/**
+ An image for the lower bound of the slider. The recommended image size is 30 x 30 points.
+ The minimum range label will not be visible.
+ */
+@property (strong, nullable) UIImage *minimumImage;
+
+@end
+
+
+/**
+ The `ORKTextScaleAnswerFormat` represents an answer format that includes a discrete slider control with a text label next to each step.
+ 
+ The scale answer format produces an `ORKScaleQuestionResult` object that contains a number whose value is the selected slider value.
+ */
+ORK_CLASS_AVAILABLE
+@interface ORKTextScaleAnswerFormat : ORKAnswerFormat
+
+- (instancetype)init NS_UNAVAILABLE;
+
+/**
+ Returns an initialized text scale answer format using the specified values.
+ 
+ This method is the designated initializer.
+ 
+ @param textChoices                 An array of text choices which will be used to determine the number of steps in the slider, and         
+                                    to fill the text label next to each of the steps. The array must contain between 2 and 8 text choices.
+ @param defaultValue                The default index of the scale. If this value is out of range, the slider is displayed without a default value.
+ @param vertical                    Pass `YES` to use a vertical scale; for the default horizontal scale, pass `NO`.
+ 
+ @return An initialized text scale answer format.
+ */
+- (instancetype)initWithTextChoices:(NSArray<ORKTextChoice *> *)textChoices
+                       defaultIndex:(NSInteger)defaultIndex
+                           vertical:(BOOL)vertical NS_DESIGNATED_INITIALIZER;
+
+/**
+ Returns an initialized text scale answer format using the specified values.
+ 
+ This method is a convenience initializer.
+ 
+ @param textChoices                 An array of text choices which will be used to determine the number of steps in the slider, and
+                                    to fill the text label next to each of the steps. The array must contain between 2 and 8 text choices.
+ @param defaultValue                The default index of the scale. If this value is out of range, the slider is displayed without a default value.
+ 
+ @return An initialized text scale answer format.
+ */
+- (instancetype)initWithTextChoices:(NSArray<ORKTextChoice *> *)textChoices
+                       defaultIndex:(NSInteger)defaultIndex;
+
+/**
+ An array of text choices which provides the text to be shown next to each of the slider steps. (read-only)
+ */
+@property (copy, readonly) NSArray<ORKTextChoice *> *textChoices;
+
+/**
+ The default index for the slider. (read-only)
+ 
+ If the value of this property is less than zero or greater than the number of text choices, the slider has no default value.
+ */
+@property (readonly) NSInteger defaultIndex;
+
+/**
+ A Boolean value indicating whether the scale is oriented vertically. (read-only)
+ */
+@property (readonly, getter=isVertical) BOOL vertical;
 
 @end
 

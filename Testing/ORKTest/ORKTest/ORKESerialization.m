@@ -475,6 +475,24 @@ ret =
         (@{
           PROPERTY(numberOfStepsPerLeg, NSNumber, NSObject, YES, nil, nil),
           })),
+
+   ENTRY(ORKTimedWalkStep,
+         ^id(NSDictionary *dict, ORKESerializationPropertyGetter getter) {
+             return [[ORKTimedWalkStep alloc] initWithIdentifier:GETPROP(dict, identifier)];
+         },
+         (@{
+            PROPERTY(distanceInMeters, NSNumber, NSObject, YES, nil, nil),
+            })),
+   ENTRY(ORKPSATStep,
+         ^id(NSDictionary *dict, ORKESerializationPropertyGetter getter) {
+             return [[ORKPSATStep alloc] initWithIdentifier:GETPROP(dict, identifier)];
+         },
+         (@{
+            PROPERTY(presentationMode, NSNumber, NSObject, YES, nil, nil),
+            PROPERTY(interStimulusInterval, NSNumber, NSObject, YES, nil, nil),
+            PROPERTY(stimulusDuration, NSNumber, NSObject, YES, nil, nil),
+            PROPERTY(seriesLength, NSNumber, NSObject, YES, nil, nil),
+            })),
   ENTRY(ORKAccelerometerRecorderConfiguration,
         ^id(NSDictionary *dict, ORKESerializationPropertyGetter getter) {
             return [[ORKAccelerometerRecorderConfiguration alloc] initWithIdentifier:GETPROP(dict, identifier) frequency:[GETPROP(dict, frequency) doubleValue]];
@@ -533,6 +551,7 @@ ret =
           PROPERTY(customAnimationURL, NSURL, NSObject, YES,
                    ^id(id url) { return [(NSURL *)url absoluteString]; },
                    ^id(id string) { return [NSURL URLWithString:string]; }),
+          PROPERTY(omitFromDocument, NSNumber, NSObject, YES, nil, nil),
           })),
   ENTRY(ORKConsentSignature,
         nil,
@@ -711,6 +730,15 @@ ret =
           PROPERTY(maximumValueDescription, NSString, NSObject, NO, nil, nil),
           PROPERTY(minimumValueDescription, NSString, NSObject, NO, nil, nil)
           })),
+   ENTRY(ORKTextScaleAnswerFormat,
+         ^id(NSDictionary *dict, ORKESerializationPropertyGetter getter) {
+             return [[ORKTextScaleAnswerFormat alloc] initWithTextChoices:GETPROP(dict, textChoices) defaultIndex:[GETPROP(dict, defaultIndex) doubleValue] vertical:[GETPROP(dict, vertical) boolValue]];
+         },
+         (@{
+            PROPERTY(textChoices, ORKTextChoice, NSArray<ORKTextChoice *>, NO, nil, nil),
+            PROPERTY(defaultIndex, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(vertical, NSNumber, NSObject, NO, nil, nil),
+            })),
   ENTRY(ORKTextAnswerFormat,
         ^id(NSDictionary *dict, ORKESerializationPropertyGetter getter) {
             return [[ORKTextAnswerFormat alloc] initWithMaximumLength:[GETPROP(dict, maximumLength) integerValue]];
@@ -853,6 +881,35 @@ ret =
          (@{
             PROPERTY(timestamp, NSNumber, NSObject, NO, nil, nil),
             PROPERTY(fileResult, ORKResult, NSObject, NO, nil, nil)
+            })),
+
+   ENTRY(ORKTimedWalkResult,
+         nil,
+         (@{
+            PROPERTY(distanceInMeters, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(timeLimit, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(duration, NSNumber, NSObject, NO, nil, nil),
+           })),
+   ENTRY(ORKPSATSample,
+         nil,
+         (@{
+            PROPERTY(correct, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(digit, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(answer, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(time, NSNumber, NSObject, NO, nil, nil),
+            })),
+   ENTRY(ORKPSATResult,
+         nil,
+         (@{
+            PROPERTY(presentationMode, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(interStimulusInterval, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(stimulusDuration, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(length, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(totalCorrect, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(totalDyad, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(totalTime, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(initialDigit, NSNumber, NSObject, NO, nil, nil),
+            PROPERTY(samples, ORKPSATSample, NSArray, NO, nil, nil),
             })),
   ENTRY(ORKQuestionResult,
          nil,
